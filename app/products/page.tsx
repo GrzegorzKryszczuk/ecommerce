@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo, Suspense } from "react";
-import { PRODUCTS } from "@/data/products";
+import { useProducts } from "@/context/ProductsContext";
 import { useCart } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Link from "next/link";
@@ -16,6 +16,7 @@ import { CheckIcon } from "@heroicons/react/24/solid";
 const PAGE_SIZE = 12;
 
 function ProductsInner() {
+  const { products } = useProducts();
   const { addToCart, items } = useCart();
   const searchParams = useSearchParams();
   const urlCategory = searchParams.get("category") ?? "Wszystkie";
@@ -26,7 +27,7 @@ function ProductsInner() {
 
   const filtered = useMemo(() => {
     setVisibleCount(PAGE_SIZE);
-    return PRODUCTS.filter((p) => {
+    return products.filter((p) => {
       const matchCat = urlCategory === "Wszystkie" || p.category === urlCategory;
       const q = search.toLowerCase();
       const matchSearch =
@@ -36,12 +37,12 @@ function ProductsInner() {
       return matchCat && matchSearch;
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, urlCategory]);
+  }, [search, urlCategory, products]);
 
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
 
-  const handleAdd = (product: typeof PRODUCTS[0]) => {
+  const handleAdd = (product: typeof products[0]) => {
     addToCart(product, 1);
     setAddedId(product.id);
     setTimeout(() => setAddedId(null), 1200);

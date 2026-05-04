@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useOrders } from "@/context/OrdersContext";
 import Header from "@/components/Header";
 import Link from "next/link";
 import {
@@ -24,6 +25,7 @@ type Step = "cart" | "form" | "success";
 
 export default function CartPage() {
   const { items, removeFromCart, updateQuantity, clearCart, totalNetto, totalBrutto } = useCart();
+  const { addOrder } = useOrders();
   const [step, setStep] = useState<Step>("cart");
   const [orderNumber, setOrderNumber] = useState("");
   const [form, setForm] = useState<OrderForm>({
@@ -57,8 +59,25 @@ export default function CartPage() {
   const handleSubmitOrder = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
-    const num = `ZAM-${Date.now().toString().slice(-8)}`;
-    setOrderNumber(num);
+    const order = addOrder({
+      nip: form.nip,
+      companyName: form.company,
+      contactName: form.fullName,
+      email: form.email,
+      phone: form.phone,
+      notes: form.note,
+      items: items.map((i) => ({
+        productId: i.product.id,
+        productName: i.product.name,
+        productCode: i.product.code,
+        quantity: i.quantity,
+        nettoPrice: i.product.nettoPrice,
+        bruttoPrice: i.product.bruttoPrice,
+      })),
+      totalNetto,
+      totalBrutto,
+    });
+    setOrderNumber(order.orderNumber);
     clearCart();
     setStep("success");
   };

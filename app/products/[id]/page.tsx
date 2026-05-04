@@ -1,6 +1,6 @@
 "use client";
 import { useState, use } from "react";
-import { PRODUCTS } from "@/data/products";
+import { useProducts } from "@/context/ProductsContext";
 import { useCart } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Link from "next/link";
@@ -22,9 +22,10 @@ interface EditableProduct {
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const { products } = useProducts();
   const { addToCart } = useCart();
 
-  const original = PRODUCTS.find((p) => p.id === Number(id));
+  const original = products.find((p) => p.id === Number(id));
 
   const [editMode, setEditMode] = useState(false);
   const [saved, setSaved] = useState(false);
