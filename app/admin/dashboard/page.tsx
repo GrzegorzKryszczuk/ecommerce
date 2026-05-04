@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Fragment } from "react";
 import { useAdmin } from "@/context/AdminContext";
 import { useProducts, ProductFull } from "@/context/ProductsContext";
 import { useOrders, Order, OrderStatus } from "@/context/OrdersContext";
@@ -236,9 +236,8 @@ function ProductsTab() {
             </thead>
             <tbody className="divide-y divide-blue-50">
               {filtered.map((product) => (
-                <>
+                <Fragment key={product.id}>
                   <tr
-                    key={product.id}
                     className={`hover:bg-blue-50/50 transition-colors ${editId === product.id ? "bg-blue-50" : ""}`}
                   >
                     <td className="px-4 py-3 font-mono text-xs text-blue-500 font-bold whitespace-nowrap">
@@ -361,7 +360,7 @@ function ProductsTab() {
                       </td>
                     </tr>
                   )}
-                </>
+                </Fragment>
               ))}
               {filtered.length === 0 && (
                 <tr>
@@ -685,8 +684,8 @@ function OrdersTab() {
             </thead>
             <tbody className="divide-y divide-blue-50">
               {orders.map((order) => (
-                <>
-                  <tr key={order.id} className="hover:bg-blue-50/40 transition-colors">
+                <Fragment key={order.id}>
+                  <tr className="hover:bg-blue-50/40 transition-colors">
                     <td className="px-4 py-3 font-mono text-xs text-blue-700 font-bold whitespace-nowrap">
                       {order.orderNumber}
                     </td>
@@ -743,7 +742,7 @@ function OrdersTab() {
                       </td>
                     </tr>
                   )}
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>
