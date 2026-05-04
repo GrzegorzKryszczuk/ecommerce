@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAdmin } from "@/context/AdminContext";
 import { useRouter } from "next/navigation";
 import { BuildingOffice2Icon, LockClosedIcon } from "@heroicons/react/24/outline";
@@ -12,10 +12,11 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  if (isAdmin) {
-    router.replace("/admin/dashboard");
-    return null;
-  }
+  useEffect(() => {
+    if (isAdmin) router.replace("/admin/dashboard");
+  }, [isAdmin, router]);
+
+  if (isAdmin) return null;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
